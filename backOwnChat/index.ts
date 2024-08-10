@@ -2,6 +2,7 @@ import express from "express";
 
 import cors, { CorsOptions } from 'cors';
 import messagesRouter from './routers/messages';
+import fileDB from './fileDb';
 
 const app = express();
 const port = 8000;
@@ -26,6 +27,8 @@ app.use(express.json());
 app.use("/messages", messagesRouter)
 
 const run= async ()=>{
+  await fileDB.init();
+
   app.listen(port, () => {
     console.log(`Listening on port ${port}`);
   })
