@@ -1,5 +1,6 @@
 import { IMessagesDB } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
+import { getAllMessages } from './messagesThunk';
 
 export interface IMessagesSliceState{
   messagesState:IMessagesDB[]
@@ -18,7 +19,16 @@ const messagesSlice = createSlice({
 
   },
   extraReducers:(builder)=>{
-
+    builder
+      .addCase(getAllMessages.pending, (state)=>{
+      state.loadingAllMessages = true
+    })
+      .addCase(getAllMessages.fulfilled, (state, {payload:messages})=>{
+        state.messagesState = messages;
+      })
+      .addCase(getAllMessages.rejected, (state)=>{
+        state.loadingAllMessages = false
+      })
   },
   selectors:{
     selectAllMessages:(state)=> state.messagesState,
@@ -28,4 +38,5 @@ const messagesSlice = createSlice({
 
 
 export const messageReducer = messagesSlice.reducer;
+export const {} = messagesSlice.actions;
 export const {selectAllMessages, selectAllMessagesLoading} = messagesSlice.selectors;

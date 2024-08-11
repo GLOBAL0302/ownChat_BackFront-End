@@ -2,6 +2,8 @@ import { Button, Grid, TextField } from '@mui/material';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { useState } from 'react';
 import { messageMutation } from '../../types';
+import { useAppDispatch } from '../../app/hooks';
+import { postNewMessage } from '../Messages/messagesThunk';
 
 
 const initialState = {
@@ -10,6 +12,7 @@ const initialState = {
 }
 
 const MessagePost = () => {
+  const dispatch = useAppDispatch();
   const [messageMutation, setMessageMutation] = useState<messageMutation>(initialState)
 
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -24,7 +27,7 @@ const MessagePost = () => {
 
  const onSubmit = (event:React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+   dispatch(postNewMessage(messageMutation));
  }
 
 
@@ -36,6 +39,7 @@ const MessagePost = () => {
         width="100%"
         item>
         <TextField
+          required
           value={messageMutation.author}
           onChange={onChange}
           fullWidth
@@ -43,6 +47,7 @@ const MessagePost = () => {
       </Grid>
       <Grid item width="100%">
         <TextField
+          required
           value={messageMutation.message}
           onChange={onChange}
           fullWidth

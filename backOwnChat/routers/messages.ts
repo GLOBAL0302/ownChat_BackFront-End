@@ -16,7 +16,11 @@ messagesRouter.get("/", async (req, res) => {
     return res.status(400).send({error: "The date is not Correct"})
   }
   const sortByValue = messages.filter((item) => {
-    return new Date(queryDate).getTime() < new Date(item.createAt).getTime() ;
+    return (
+      new Date(queryDate).getTime() < new Date(item.createAt).getTime()
+      ||
+      new Date(queryDate).getTime() === new Date(item.createAt).getTime()
+    );
   });
 
   res.send(sortByValue.slice(0, 30));
