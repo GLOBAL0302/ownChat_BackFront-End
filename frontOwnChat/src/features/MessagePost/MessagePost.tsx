@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { messageMutation } from '../../types';
 import { useAppDispatch } from '../../app/hooks';
 import { postNewMessage } from '../Messages/messagesThunk';
+import { motion } from 'framer-motion';
 
 
 const initialState = {
@@ -53,13 +54,18 @@ const MessagePost = () => {
           fullWidth
           name="message" id="message" label="Message" variant="standard" color="primary" />
       </Grid>
-      <Grid item sx={{marginLeft:"auto"}}>
+      <Grid item sx={{ marginLeft: "auto" }}>
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
         <Button
-        type="submit"
+          type="submit"
           variant="contained" color="primary">
           Post
-          <MailOutlineIcon sx={{ marginLeft:"10px" }}/>
+          <MailOutlineIcon sx={{ marginLeft: "10px" }} />
         </Button>
+        </motion.div>
       </Grid>
     </Grid>
   );
