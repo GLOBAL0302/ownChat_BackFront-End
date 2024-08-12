@@ -18,12 +18,10 @@ messagesRouter.get("/", async (req, res) => {
   const sortByValue = messages.filter((item) => {
     return (
       new Date(queryDate).getTime() < new Date(item.createAt).getTime()
-      ||
-      new Date(queryDate).getTime() === new Date(item.createAt).getTime()
     );
   });
 
-  res.send(sortByValue.slice(0, 30));
+  res.send(sortByValue.slice(0, 30).reverse());
 });
 
 

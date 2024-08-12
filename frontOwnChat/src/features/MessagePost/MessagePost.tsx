@@ -1,36 +1,39 @@
-import { Button, Grid, TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { useState } from 'react';
 import { messageMutation } from '../../types';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { postNewMessage } from '../Messages/messagesThunk';
 import { motion } from 'framer-motion';
+import { LoadingButton } from '@mui/lab';
+import { selectPostMessageLoading } from '../Messages/messagesSlice';
 
 
 const initialState = {
-  author:"",
-  message:""
-}
+  author: '',
+  message: '',
+};
 
 const MessagePost = () => {
   const dispatch = useAppDispatch();
-  const [messageMutation, setMessageMutation] = useState<messageMutation>(initialState)
+  const postMessageLoading = useAppSelector(selectPostMessageLoading);
+  const [messageMutation, setMessageMutation] = useState<messageMutation>(initialState);
 
+  console.log(postMessageLoading);
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const {name, value} = event.target;
-    setMessageMutation((prevState)=>(
+    const { name, value } = event.target;
+    setMessageMutation((prevState) => (
       {
         ...prevState,
-        [name]:value
+        [name]: value,
       }
-    ))
-  }
+    ));
+  };
 
- const onSubmit = (event:React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-   dispatch(postNewMessage(messageMutation));
- }
-
+    dispatch(postNewMessage(messageMutation));
+  };
 
   return (
     <Grid
@@ -54,17 +57,21 @@ const MessagePost = () => {
           fullWidth
           name="message" id="message" label="Message" variant="standard" color="primary" />
       </Grid>
-      <Grid item sx={{ marginLeft: "auto" }}>
+      <Grid item sx={{ marginLeft: 'auto' }}>
         <motion.div
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
-        <Button
-          type="submit"
-          variant="contained" color="primary">
-          Post
-          <MailOutlineIcon sx={{ marginLeft: "10px" }} />
-        </Button>
+          <LoadingButton
+            type="submit"
+            size="large"
+            endIcon={<MailOutlineIcon sx={{ marginLeft: '10px' }} />}
+            loading={postMessageLoading}
+            loadingPosition="end"
+            variant="contained"
+          >
+            <span>Send</span>
+          </LoadingButton>
         </motion.div>
       </Grid>
     </Grid>

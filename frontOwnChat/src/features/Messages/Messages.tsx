@@ -1,4 +1,4 @@
-import { Badge, Box, Typography } from '@mui/material';
+import { Badge, Box, CircularProgress, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useCallback, useEffect, useState } from 'react';
 import { getAllMessages } from './messagesThunk';
@@ -42,7 +42,7 @@ const Messages = () => {
     myInterval = setInterval(()=>{
       dispatch(getAllMessages(lastTime));
     }, 3000)
-  }, [lastTime])
+  }, [])
 
   useEffect(() => {
     dispatch(getAllMessages(lastTime));
@@ -50,31 +50,34 @@ const Messages = () => {
     setTime()
   }, [dispatch]);
 
-
   return (
-    <Box sx={{ border: "1px solid black", padding: "10px", overflow: "auto" }}>
-      <Typography variant="h6" color="textSecondary" marginBottom={3}>
+    <Box sx={{ border: "4px dashed silver", padding: "10px", overflow: "auto", height:"60%"}}>
+      <Typography variant="h6" color="textSecondary" marginBottom={3} textAlign="center">
         All Messages
         <Badge badgeContent={allMessages.length} color="primary">
           <DraftsIcon color="action" />
         </Badge>
       </Typography>
-      <motion.div
-        className="container"
-        variants={container}
-        initial="hidden"
-        animate="visible"
-      >
-        {allMessages.map((message) => (
-          <motion.div key={message.id} className="item" variants={item}>
-          <Message
-          key={message.id}
-          message={message} />
+      {
+        messagesLoading ? (
+          <motion.div
+            className="container"
+            variants={container}
+            initial="hidden"
+            animate="visible"
+          >
+            {allMessages.map((message) => (
+              <motion.div key={message.id} className="item" variants={item}>
+                <Message
+                  key={message.id}
+                  message={message} />
+              </motion.div>
+            ))}
           </motion.div>
-        ))}
-      </motion.div>
+        ): <CircularProgress />
+      }
     </Box>
-);
+  );
 };
 
 export default Messages;
