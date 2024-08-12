@@ -10,12 +10,20 @@ const App = () => {
       sx={{
         height: '90vh',
         display: 'flex',
-        flexDirection: 'column' }}>
-      <Messages/>
-      <Divider  sx={{mt:"auto"}}>
-       <KeyboardHideIcon sx={{padding:"5px", border:"2px solid black", borderRadius:"50%"}}/>
+        flexDirection: 'column',
+      }}
+    >
+      <Messages />
+      <Divider sx={{ mt: 'auto' }}>
+        <KeyboardHideIcon
+          sx={{
+            padding: '5px',
+            border: '2px solid black',
+            borderRadius: '50%',
+          }}
+        />
       </Divider>
-      <MessagePost/>
+      <MessagePost />
     </Container>
   );
 };

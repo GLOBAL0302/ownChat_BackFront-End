@@ -14,68 +14,78 @@ const container = {
     scale: 1,
     transition: {
       delayChildren: 0.3,
-      staggerChildren: 0.2
-    }
-  }
+      staggerChildren: 0.2,
+    },
+  },
 };
 
 const item = {
   hidden: { y: 20, opacity: 0 },
   visible: {
     y: 0,
-    opacity: 1
-  }
+    opacity: 1,
+  },
 };
 
 let lastTimeAt = new Date().toISOString();
-let myInterval = 0
+let myInterval = 0;
 
 const Messages = () => {
-  const [lastTime, setLastTime] = useState<string>(
-    lastTimeAt
-  );
+  const [lastTime] = useState<string>(lastTimeAt);
   const dispatch = useAppDispatch();
   const messagesLoading = useAppSelector(selectAllMessagesLoading);
   const allMessages = useAppSelector(selectAllMessages);
 
-  const setTime = useCallback(async ()=>{
-    myInterval = setInterval(()=>{
+  const setTime = useCallback(async () => {
+    myInterval = setInterval(() => {
       dispatch(getAllMessages(lastTime));
-    }, 3000)
-  }, [])
+    }, 3000);
+  }, []);
 
   useEffect(() => {
     dispatch(getAllMessages(lastTime));
     clearInterval(myInterval);
-    setTime()
+    setTime();
   }, [dispatch]);
 
+
+
   return (
-    <Box sx={{ border: "4px dashed silver", padding: "10px", overflow: "auto", height:"60%"}}>
-      <Typography variant="h6" color="textSecondary" marginBottom={3} textAlign="center">
+    <Box
+      sx={{
+        border: '4px dashed silver',
+        padding: '10px',
+        overflow: 'auto',
+        height: '60%',
+      }}
+    >
+      <Typography
+        variant="h6"
+        color="textSecondary"
+        marginBottom={3}
+        textAlign="center"
+      >
         All Messages
         <Badge badgeContent={allMessages.length} color="primary">
           <DraftsIcon color="action" />
         </Badge>
       </Typography>
-      {
-        messagesLoading ? (
-          <motion.div
-            className="container"
-            variants={container}
-            initial="hidden"
-            animate="visible"
-          >
-            {allMessages.map((message) => (
-              <motion.div key={message.id} className="item" variants={item}>
-                <Message
-                  key={message.id}
-                  message={message} />
-              </motion.div>
-            ))}
-          </motion.div>
-        ): <CircularProgress />
-      }
+      {messagesLoading ? (
+        <motion.div
+          className="container"
+          variants={container}
+          initial="hidden"
+          animate="visible"
+        >
+          {allMessages.map((message) => (
+            <motion.div key={message.id} className="item" variants={item}>
+              <Message key={message.id} message={message} />
+            </motion.div>
+          ))}
+        </motion.div>
+      ) : (
+        <CircularProgress />
+      )}
     </Box>
   );
 };
