@@ -6,6 +6,7 @@ import { selectAllMessages, selectAllMessagesLoading } from './messagesSlice';
 import Message from './Message';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import { motion } from 'framer-motion';
+import axiosApi from '../../axiosApi';
 
 const container = {
   hidden: { opacity: 1, scale: 0 },
@@ -27,28 +28,30 @@ const item = {
   },
 };
 
-let lastTimeAt = new Date().toISOString();
 let myInterval = 0;
-
+let time: string;
 const Messages = () => {
-  const [lastTime] = useState<string>(lastTimeAt);
+  const [lastTime, setLastTime] = useState<string>(time);
   const dispatch = useAppDispatch();
   const messagesLoading = useAppSelector(selectAllMessagesLoading);
   const allMessages = useAppSelector(selectAllMessages);
 
   const setTime = useCallback(async () => {
-    myInterval = setInterval(() => {
-      dispatch(getAllMessages(lastTime));
-    }, 3000);
-  }, []);
+    if (!lastTime) {
+      const { data } = await axiosApi.get('/messages');
+      setLastTime(data[0].createAt);
+    }
+    if (lastTime) {
+      myInterval = setInterval(() => {
+        dispatch(getAllMessages(lastTime));
+      }, 3000);
+    }
+  }, [lastTime]);
 
   useEffect(() => {
-    dispatch(getAllMessages(lastTime));
     clearInterval(myInterval);
-    setTime();
-  }, [dispatch]);
-
-
+    void setTime();
+  }, [setTime]);
 
   return (
     <Box
@@ -70,7 +73,7 @@ const Messages = () => {
           <DraftsIcon color="action" />
         </Badge>
       </Typography>
-      {messagesLoading ? (
+      {messagesLoading && allMessages.length > 0 ? (
         <motion.div
           className="container"
           variants={container}
@@ -84,7 +87,18 @@ const Messages = () => {
           ))}
         </motion.div>
       ) : (
-        <CircularProgress />
+        <Box
+          component="div"
+          display="flex"
+          justifyContent="center"
+          flexDirection="column"
+          alignItems="center"
+        >
+          <CircularProgress />
+          <Typography variant="h4" component="h4">
+            ...Waiting for your message
+          </Typography>
+        </Box>
       )}
     </Box>
   );

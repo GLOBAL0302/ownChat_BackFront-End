@@ -2,26 +2,25 @@ import express from "express";
 import fileDB from '../fileDb';
 import { IMessageMutation } from '../types';
 
-
-
 const messagesRouter = express.Router();
-
-
 
 messagesRouter.get("/", async (req, res) => {
   const messages = await fileDB.getMessages();
   const queryDate = req.query.datetime as string;
   const date = new Date(queryDate);
+  if(!queryDate) {
+    return res.send([...messages].reverse().slice(0, 30))
+  }
   if(isNaN(date.getDate())){
     return res.status(400).send({error: "The date is not Correct"})
   }
-  const sortByValue = messages.filter((item) => {
-    return (
-      new Date(queryDate).getTime() < new Date(item.createAt).getTime()
-    );
-  });
+    const sortByValue = messages.filter((item) => {
+      return (
+        new Date(queryDate).getTime() < new Date(item.createAt).getTime()
+      );
+    });
+    return  res.send(sortByValue.slice(0, 30));
 
-  res.send(sortByValue.slice(0, 30).reverse());
 });
 
 
